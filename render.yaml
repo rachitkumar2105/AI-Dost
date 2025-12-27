@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ai-dost
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_SUPABASE_URL
+        fromConfig: true
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        fromConfig: true
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
