@@ -30,19 +30,31 @@ Follow these steps to upload your project to GitHub and deploy it on Render.
 
 ### 2. Deploy on Render
 
-1. **Sign in to Render**: Go to [render.com](https://render.com).
-2. **Create a New Blueprint Instance**:
-   - Render will see your `render.yaml` file.
-   - Click **New +** and select **Blueprint**.
-   - Connect your GitHub account and select the `ai-dost` repository.
-3. **Configure Environment Variables**:
-   In the Render dashboard, go to **Environment** and add:
-   - `VITE_SUPABASE_URL`: (Your Supabase URL)
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`: (Your Supabase Key)
-4. **Deploy**:
-   Render will automatically use the `buildCommand` and `staticPublishPath` defined in your `render.yaml`.
+#### Option A: Blueprint (Faster)
+1. Sign in to [render.com](https://render.com).
+2. Click **New +** -> **Blueprint**.
+3. Connect your GitHub repo `AI-Dost`.
+4. Render will read `render.yaml` and ask for your Supabase keys.
+
+#### Option B: Manual Static Site (Recommended if Option A fails)
+1. Sign in to [render.com](https://render.com).
+2. Click **New +** -> **Static Site**.
+3. Connect your GitHub repository `rachitkumar2105/AI-Dost`.
+4. **Configuration Settings**:
    - **Build Command**: `npm run build`
    - **Publish Directory**: `dist`
+5. **Add Environment Variables**:
+   - Click the **Environment** tab on the left.
+   - Click **Add Environment Variable**.
+   - Add `VITE_SUPABASE_URL` with your Supabase URL.
+   - Add `VITE_SUPABASE_PUBLISHABLE_KEY` with your Supabase Key.
+6. **Add Rewrites (CRITICAL for Blank Screen Fix)**:
+   - Click the **Redirects/Rewrites** tab on the left.
+   - Click **Add Rule**.
+   - **Source**: `/*`
+   - **Destination**: `/index.html`
+   - **Type**: `Rewrite`
+7. Click **Deploy Static Site**.
 
 ---
 
