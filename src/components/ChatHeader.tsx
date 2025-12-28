@@ -12,7 +12,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { DeveloperDialog } from './DeveloperDialog';
-import { SettingsDialog } from './SettingsDialog';
+import { PrivacyPolicyDialog } from './PrivacyPolicyDialog';
 
 interface ChatHeaderProps {
   onMenuClick?: () => void;
@@ -23,7 +23,7 @@ interface ChatHeaderProps {
 export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHeaderProps) {
   const { user, signOut } = useAuth();
   const [developerOpen, setDeveloperOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   return (
     <header className="h-16 border-b border-border/50 flex items-center justify-between px-4 glass-subtle">
@@ -86,9 +86,9 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setSettingsOpen(true)} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => setPrivacyOpen(true)} className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>Privacy & Policy</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive cursor-pointer">
@@ -99,7 +99,7 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
       </DropdownMenu>
 
       <DeveloperDialog open={developerOpen} onOpenChange={setDeveloperOpen} />
-      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <PrivacyPolicyDialog open={privacyOpen} onOpenChange={setPrivacyOpen} />
     </header>
   );
 }
