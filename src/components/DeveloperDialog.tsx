@@ -35,7 +35,8 @@ export function DeveloperDialog({ open, onOpenChange }: DeveloperDialogProps) {
                         <div className="space-y-1 text-[8px] text-muted-foreground leading-snug">
                             <p>• Built by Rachit as a personal project.</p>
                             <p>• Uses Google Gemini 2.0 Flash API.</p>
-                            <p>• Features real-time search for accuracy.</p>
+                            <p>• Knowledge cutoff: August 2024.</p>
+                            <p>• Recent info accessed via real-time web search.</p>
                             <p>• Focus on safe AI interaction & learning.</p>
                         </div>
                     </div>
