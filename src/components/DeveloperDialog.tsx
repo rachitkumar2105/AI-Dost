@@ -32,12 +32,13 @@ export function DeveloperDialog({ open, onOpenChange }: DeveloperDialogProps) {
                     </div>
 
                     <div className="pt-2 border-t border-border/20">
-                        <div className="space-y-1 text-[8px] text-muted-foreground leading-snug">
-                            <p>• Built by Rachit as a personal project.</p>
-                            <p>• Uses Google Gemini 2.0 Flash API.</p>
-                            <p>• Knowledge cutoff: August 2024.</p>
-                            <p>• Recent info accessed via real-time web search.</p>
-                            <p>• Focus on safe AI interaction & learning.</p>
+                        <div className="space-y-1 text-[8px] text-muted-foreground leading-tight">
+                            <p>• Coded & made by Rachit Kumar Singh.</p>
+                            <p>• Model: Google Gemini 2.0 Flash (LLM).</p>
+                            <p>• Trained by Google for reasoning & NLP.</p>
+                            <p>• Knowledge Cutoff: August 2024.</p>
+                            <p>• Accesses latest info via Real-time Search.</p>
+                            <p>• Purpose: Safe, educational & smart AI.</p>
                         </div>
                     </div>
                 </div>
