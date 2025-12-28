@@ -43,15 +43,20 @@ export default function Chat() {
 
   useEffect(() => {
     if (scrollRef.current) {
-      // Use setTimeout to ensure DOM has updated
-      setTimeout(() => {
+      // Scroll immediately to latest message
+      const scrollToBottom = () => {
         if (scrollRef.current) {
-          scrollRef.current.scrollTo({
-            top: scrollRef.current.scrollHeight,
-            behavior: 'smooth'
-          });
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-      }, 100);
+      };
+
+      // Immediate scroll
+      scrollToBottom();
+
+      // Also scroll after a brief delay to catch any delayed renders
+      const timeoutId = setTimeout(scrollToBottom, 50);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [messages, streamingContent, isStreaming]);
 

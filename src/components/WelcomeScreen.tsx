@@ -35,33 +35,33 @@ const suggestions = [
 
 export function WelcomeScreen({ onSend }: WelcomeScreenProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 py-4 md:py-6">
+    <div className="flex flex-col items-center justify-center min-h-[40vh] px-4 py-3 md:py-4">
       {/* Logo and Title */}
-      <div className="flex flex-col items-center mb-6 md:mb-8 animate-float">
-        <div className="relative mb-3 md:mb-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center glow-primary">
-            <Bot className="w-7 h-7 md:w-8 md:h-8 text-primary-foreground" />
+      <div className="flex flex-col items-center mb-4 md:mb-6 animate-float">
+        <div className="relative mb-2 md:mb-3">
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center glow-primary">
+            <Bot className="w-6 h-6 md:w-7 md:h-7 text-primary-foreground" />
           </div>
-          <div className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 rounded-full bg-accent flex items-center justify-center animate-pulse">
-            <Sparkles className="w-2 h-2 md:w-2.5 md:h-2.5 text-accent-foreground" />
+          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-accent flex items-center justify-center animate-pulse">
+            <Sparkles className="w-1.5 h-1.5 md:w-2 md:h-2 text-accent-foreground" />
           </div>
         </div>
 
-        <h1 className="text-3xl md:text-4xl font-bold mb-1 gradient-text">
+        <h1 className="text-2xl md:text-3xl font-bold mb-0.5 gradient-text">
           AI Dost
         </h1>
-        <p className="text-[10px] md:text-xs text-muted-foreground font-medium italic mb-3">made by Rachit Kumar Singh.</p>
-        <p className="text-muted-foreground text-base md:text-lg text-center max-w-md">
+        <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic mb-2">made by Rachit Kumar Singh.</p>
+        <p className="text-muted-foreground text-sm md:text-base text-center max-w-md">
           Your friendly AI companion for coding, learning, and creative tasks
         </p>
       </div>
 
       {/* Feature Pills */}
-      <div className="flex flex-wrap justify-center gap-2 mb-6">
+      <div className="flex flex-wrap justify-center gap-1.5 mb-4">
         {['Fast Responses', 'Code Helper', 'Creative Writing', '24/7 Available'].map((feature) => (
           <span
             key={feature}
-            className="px-3 py-1.5 rounded-full glass-subtle text-xs text-muted-foreground"
+            className="px-2.5 py-1 rounded-full glass-subtle text-[10px] text-muted-foreground"
           >
             {feature}
           </span>
@@ -69,7 +69,7 @@ export function WelcomeScreen({ onSend }: WelcomeScreenProps) {
       </div>
 
       {/* Suggestion Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-2xl">
         {suggestions.map((suggestion, index) => (
           <button
             key={suggestion.title}
