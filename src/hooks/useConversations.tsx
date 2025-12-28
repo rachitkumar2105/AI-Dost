@@ -147,6 +147,24 @@ export function useConversations() {
     await fetchConversations();
   }, [currentConversation, fetchConversations]);
 
+  const deleteAllConversations = useCallback(async () => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('conversations')
+      .delete()
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error deleting all conversations:', error);
+      return;
+    }
+
+    setCurrentConversation(null);
+    setMessages([]);
+    await fetchConversations();
+  }, [user, fetchConversations]);
+
   const startNewChat = useCallback(async () => {
     const newConv = await createConversation();
     if (newConv) {
@@ -175,6 +193,7 @@ export function useConversations() {
     createConversation,
     addMessage,
     deleteConversation,
+    deleteAllConversations,
     startNewChat,
     setMessages,
     resetToHome

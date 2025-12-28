@@ -11,6 +11,7 @@ interface ChatSidebarProps {
   onSelectConversation: (conversation: Conversation) => void;
   onNewChat: () => void;
   onDeleteConversation: (id: string) => void;
+  onDeleteAll: () => void;
 }
 
 export function ChatSidebar({
@@ -19,6 +20,7 @@ export function ChatSidebar({
   onSelectConversation,
   onNewChat,
   onDeleteConversation,
+  onDeleteAll,
 }: ChatSidebarProps) {
   return (
     <div className="h-full flex flex-col bg-sidebar-background border-r border-sidebar-border">
@@ -67,7 +69,7 @@ export function ChatSidebar({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                  className="h-8 w-8 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all rounded-lg"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleteConversation(conversation.id);
@@ -82,7 +84,18 @@ export function ChatSidebar({
       </ScrollArea>
 
       {/* Footer */}
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-sidebar-border space-y-3">
+        {conversations.length > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onDeleteAll}
+            className="w-full justify-start gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg text-xs"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            Clear History
+          </Button>
+        )}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           AI Dost is ready

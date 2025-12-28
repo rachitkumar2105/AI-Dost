@@ -24,6 +24,7 @@ export default function Chat() {
     selectConversation,
     addMessage,
     deleteConversation,
+    deleteAllConversations,
     startNewChat,
     resetToHome,
   } = useConversations();
@@ -154,6 +155,7 @@ export default function Chat() {
             setSidebarOpen(false);
           }}
           onDeleteConversation={deleteConversation}
+          onDeleteAll={deleteAllConversations}
         />
       </aside>
 

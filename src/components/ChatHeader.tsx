@@ -1,14 +1,18 @@
-import { Menu, LogOut, Bot, Sparkles, User } from 'lucide-react';
+import { Menu, LogOut, Bot, Sparkles, User, Info, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
+import { DeveloperDialog } from './DeveloperDialog';
+import { SettingsDialog } from './SettingsDialog';
 
 interface ChatHeaderProps {
   onMenuClick?: () => void;
@@ -18,6 +22,8 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHeaderProps) {
   const { user, signOut } = useAuth();
+  const [developerOpen, setDeveloperOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <header className="h-16 border-b border-border/50 flex items-center justify-between px-4 glass-subtle">
@@ -33,21 +39,32 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
           </Button>
         )}
 
-        <button
-          onClick={onLogoClick}
-          className="flex items-center gap-3 hover:opacity-80 transition-opacity active:scale-95 text-left"
-        >
-          <div className="relative">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary),0.3)]">
-              <Bot className="w-5 h-5 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onLogoClick}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity active:scale-95 text-left"
+          >
+            <div className="relative">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+                <Bot className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <Sparkles className="w-3 h-3 text-accent absolute -top-0.5 -right-0.5" />
             </div>
-            <Sparkles className="w-3 h-3 text-accent absolute -top-0.5 -right-0.5" />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="font-bold text-base md:text-lg gradient-text leading-none">AI Dost</h1>
-            <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic">made by Rachit Kumar Singh.</p>
-          </div>
-        </button>
+            <div className="flex flex-col">
+              <h1 className="font-bold text-base md:text-lg gradient-text leading-none">AI Dost</h1>
+              <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic">made by Rachit Kumar Singh.</p>
+            </div>
+          </button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setDeveloperOpen(true)}
+            className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors hover:scale-110 active:scale-90"
+          >
+            <Info className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       <DropdownMenu>
@@ -61,12 +78,17 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 glass" align="end">
-          <div className="flex items-center justify-start gap-2 p-2">
-            <div className="flex flex-col space-y-1 leading-none">
-              <p className="font-medium text-sm">{user?.email}</p>
-              <p className="text-xs text-muted-foreground">Logged in</p>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{user?.email}</p>
+              <p className="text-xs leading-none text-muted-foreground">Logged in</p>
             </div>
-          </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setSettingsOpen(true)} className="cursor-pointer">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive cursor-pointer">
             <LogOut className="mr-2 h-4 w-4" />
@@ -74,6 +96,9 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <DeveloperDialog open={developerOpen} onOpenChange={setDeveloperOpen} />
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </header>
   );
 }
