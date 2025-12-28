@@ -43,9 +43,17 @@ export default function Chat() {
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      // Use setTimeout to ensure DOM has updated
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
     }
-  }, [messages, streamingContent]);
+  }, [messages, streamingContent, isStreaming]);
 
   const sendMessage = useCallback(async (content: string) => {
     let conversation = currentConversation;
