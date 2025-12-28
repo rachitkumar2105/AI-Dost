@@ -12,41 +12,25 @@ interface DeveloperDialogProps {
 export function DeveloperDialog({ open, onOpenChange }: DeveloperDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[380px] glass p-6 border-border/50 overflow-hidden outline-none">
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full border-2 border-primary bg-secondary overflow-hidden shrink-0 shadow-lg">
-                        <img
-                            src="/rachit.jpg"
-                            alt="Rachit Kumar Singh"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                    <div className="space-y-0.5">
-                        <h2 className="text-lg font-bold gradient-text leading-tight">Rachit Kumar Singh</h2>
-                        <div className="flex items-center gap-1.5 text-muted-foreground text-[10px]">
-                            <GraduationCap className="w-3 h-3 text-primary" />
-                            <span>3rd yr B-Tech CSE @ KIIT</span>
+            <DialogContent className="fixed top-12 left-4 translate-x-0 translate-y-0 sm:max-w-[240px] glass p-3 border-border/50 overflow-hidden outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 shadow-2xl">
+                <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 rounded-full border border-primary/50 bg-secondary overflow-hidden shrink-0 shadow-sm">
+                            <img
+                                src="/rachit.jpg"
+                                alt="Rachit Kumar Singh"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <div className="space-y-0">
+                            <h2 className="text-[11px] font-bold gradient-text leading-tight">Rachit Kumar Singh</h2>
+                            <p className="text-[8px] text-muted-foreground leading-tight">3rd yr B-Tech CSE @ KIIT</p>
                         </div>
                     </div>
-                </div>
 
-                <div className="mt-4 pt-4 border-t border-border/50">
-                    <h3 className="text-[11px] font-semibold mb-2 flex items-center gap-1.5 text-foreground">
-                        <Code2 className="w-3.5 h-3.5 text-primary" />
-                        About Project
-                    </h3>
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                        AI Dost is a premium AI companion powered by Google's Gemini 2.0. It features real-time search,
-                        a sleek dark interface, and is designed for maximum productivity and intelligent interaction.
-                    </p>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between text-[9px] text-muted-foreground/60">
-                    <span className="flex items-center gap-1">
-                        <Sparkles className="w-2.5 h-2.5" />
-                        Made with ❤️ for a smarter India
-                    </span>
-                    <span className="font-medium">2024</span>
+                    <div className="pt-1.5 border-t border-border/30 text-[8px] text-muted-foreground leading-snug italic">
+                        "AI Dost: Designed for intelligent & safe interaction."
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>
