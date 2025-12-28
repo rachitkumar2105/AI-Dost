@@ -52,18 +52,19 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
             </div>
             <div className="flex flex-col">
               <h1 className="font-bold text-base md:text-lg gradient-text leading-none">AI Dost</h1>
-              <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic">made by Rachit Kumar Singh.</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic leading-none">made by Rachit Kumar Singh.</p>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setDeveloperOpen(true)}
+                  className="h-4 w-4 text-muted-foreground hover:text-primary transition-all hover:scale-125 active:scale-90 p-0"
+                >
+                  <Info className="w-2.5 h-2.5" />
+                </Button>
+              </div>
             </div>
           </button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setDeveloperOpen(true)}
-            className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors hover:scale-110 active:scale-90"
-          >
-            <Info className="w-4 h-4" />
-          </Button>
         </div>
       </div>
 
