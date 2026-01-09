@@ -2,69 +2,96 @@
 
 Your friendly AI companion for coding, learning, and creative tasks. AI Dost features a premium dark theme, real-time message streaming, and a smooth, responsive user interface.
 
-## 🚀 Deployment Instructions
+## ✨ Features
 
-Follow these steps to upload your project to GitHub and deploy it on Render.
+- **Personalized AI Chat**: Intelligent conversations powered by Gemini 2.0 Flash context.
+- **Real-time Streaming**: Instant responses with typing indicators.
+- **Rich Text Support**: Full Markdown rendering including code blocks, lists, and tables.
+- **Responsive Design**: Seamless experience across mobile, tablet, and desktop devices.
+- **Project Organization**: Save and manage multiple chat conversations.
+- **Premium UI**: Modern dark-themed interface built with Shadcn UI and Tailwind CSS.
+- **Voice Capabilities**: (Optional) Text-to-speech integration.
+
+## 🛠 Tech Stack
+
+- **Framework**: [React](https://react.dev/) + [Vite](https://vitejs.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [Shadcn UI](https://ui.shadcn.com/) + [Lucide Icons](https://lucide.dev/)
+- **State Management**: [TanStack Query](https://tanstack.com/query/latest)
+- **Backend/Database**: [Supabase](https://supabase.com/) (Edge Functions for AI proxy)
+- **Forms**: React Hook Form + Zod validation
+- **Visualization**: Recharts
+
+## 🚀 Getting Started
+
+Follow these steps to run the project locally.
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/rachitkumar2105/AI-Dost.git
+   cd AI-Dost
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables**
+   Create a `.env` file in the root directory and add your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
+
+## 📦 Deployment Instructions
+
+Follow these steps to deploy your project to production.
 
 ### 1. Upload to GitHub
 
-1. **Sign in to GitHub**: Go to [github.com](https://github.com) and log in.
-2. **Create a New Repository**:
-   - Click the **+** icon in the top right and select **New repository**.
-   - Name it `ai-dost`.
-   - Set it to **Public** (or Private if you prefer).
-   - Click **Create repository**.
-3. **Push your code**:
-   Open your terminal in the project folder and run:
+1. **Initialize Git**:
    ```bash
    git init
    git add .
-   git commit -m "Initial commit: AI Dost Complete"
+   git commit -m "Initial commit"
    git branch -M main
    git remote add origin https://github.com/rachitkumar2105/AI-Dost.git
    git push -u origin main
    ```
-   *(Replace `YOUR_USERNAME` with your actual GitHub username)*
-
----
 
 ### 2. Deploy on Render
 
-#### Option A: Blueprint (Faster)
+#### Option A: Blueprint (Recommended)
 1. Sign in to [render.com](https://render.com).
 2. Click **New +** -> **Blueprint**.
 3. Connect your GitHub repo `AI-Dost`.
-4. Render will read `render.yaml` and ask for your Supabase keys.
+4. Render will auto-detect configuration from `render.yaml`.
 
-#### Option B: Manual Static Site (Recommended if Option A fails)
-1. Sign in to [render.com](https://render.com).
-2. Click **New +** -> **Static Site**.
-3. Connect your GitHub repository `rachitkumar2105/AI-Dost`.
-4. **Configuration Settings**:
-   - **Build Command**: `npm run build`
-   - **Publish Directory**: `dist`
-5. **Add Environment Variables**:
-   - Click the **Environment** tab on the left.
-   - Click **Add Environment Variable**.
-   - Add `VITE_SUPABASE_URL` with your Supabase URL.
-   - Add `VITE_SUPABASE_PUBLISHABLE_KEY` with your Supabase Key.
-6. **Add Rewrites (CRITICAL for Blank Screen Fix)**:
-   - Click the **Redirects/Rewrites** tab on the left.
-   - Click **Add Rule**.
-   - **Source**: `/*`
-   - **Destination**: `/index.html`
-   - **Type**: `Rewrite`
-7. Click **Deploy Static Site**.
+#### Option B: Manual Static Site
+1. Create a **Static Site** on Render.
+2. Connect your repository.
+3. **Build Command**: `npm run build`
+4. **Publish Directory**: `dist`
+5. **Environment Variables**: Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+6. **Rewrite Rule** (Crucial for SPA):
+   - Source: `/*`
+   - Destination: `/index.html`
+   - Type: `Rewrite`
 
 ---
 
-## 🛠 Tech Stack
-
-- **Frontend**: React, Vite, Tailwind CSS, Shadcn UI
-- **Icons**: Lucide React
-- **Backend**: Supabase
-- **Animations**: CSS Keyframes + Framer-like transitions
-
 ## 👨‍💻 Author
 
-**(made by Rachit Kumar Singh.)**
+**Rachit Kumar Singh**
