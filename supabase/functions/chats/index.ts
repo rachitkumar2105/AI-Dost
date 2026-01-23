@@ -72,9 +72,10 @@ Your core persona:
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Gemini API error:", response.status, errorText);
-      // Return the error to the client with the same status code
+      // Return the error to the client with 200 status so the client can read the error message
+      // instead of throwing a generic "non-2xx status code" error.
       return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText }), {
-        status: response.status,
+        status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

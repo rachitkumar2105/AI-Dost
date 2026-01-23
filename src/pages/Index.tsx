@@ -25,6 +25,10 @@ const Index = () => {
 
             if (error) throw error;
 
+            if (data.error) {
+                throw new Error(data.details || data.error);
+            }
+
             // Handle the response if it's text (simpler for now if not fully streaming UI ready)
             // Or if the backend returns a stream we might need to handle it differently.
             // The current backend returns a stream. Supabase invoke returns 'data' which might be the text if parsed or a blob.
