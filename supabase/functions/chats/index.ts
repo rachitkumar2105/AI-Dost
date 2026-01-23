@@ -48,9 +48,9 @@ Your core persona:
 
 
     // Call Gemini API
-    // Using gemini-pro as a reliable fallback
+    // Using gemini-2.0-flash as it is the only confirmed working model for this key (even if rate limited)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
