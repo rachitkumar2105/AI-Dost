@@ -46,9 +46,11 @@ Your core persona:
         parts: [{ text: msg.content }]
       }));
 
+
     // Call Gemini API
+    // Using gemini-1.5-flash which is generally more stable for free tier
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
@@ -70,7 +72,11 @@ Your core persona:
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Gemini API error:", response.status, errorText);
-      throw new Error(`Gemini API Error: ${response.status}`);
+      // Return the error to the client with the same status code
+      return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText }), {
+        status: response.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const data = await response.json();

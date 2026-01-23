@@ -70,7 +70,7 @@ const Index = () => {
             console.error('Error sending message:', error);
             toast({
                 title: "Error",
-                description: error.message || "Failed to send message",
+                description: error.message || error.error || "Failed to send message",
                 variant: "destructive",
             });
         } finally {
