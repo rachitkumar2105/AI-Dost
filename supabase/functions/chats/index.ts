@@ -49,6 +49,17 @@ Your core persona:
 
     // Call Gemini API
     // Using gemini-2.0-flash as it is the only confirmed working model for this key (even if rate limited)
+
+    // Prepend system instruction to the contents array as a user message
+    // This is the most robust way to handle system prompts across different Gemini API versions
+    const finalContents = [
+      {
+        role: 'user',
+        parts: [{ text: `System Instruction:\n${systemInstruction}\n\nUser Request:` }]
+      },
+      ...contents
+    ];
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
@@ -57,10 +68,7 @@ Your core persona:
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: contents,
-          systemInstruction: {
-            parts: [{ text: systemInstruction }]
-          },
+          contents: finalContents,
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: 1000,
