@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
     const [messages, setMessages] = useState<any[]>([]);
@@ -12,6 +13,7 @@ const Index = () => {
     const [conversations, setConversations] = useState<any[]>([]);
     const [currentId, setCurrentId] = useState<string | null>(null);
     const { toast } = useToast();
+    const { user, signOut } = useAuth();
 
     const handleSend = async (message: string) => {
         try {
@@ -95,6 +97,8 @@ const Index = () => {
                     }}
                     onDeleteConversation={(id) => setConversations(prev => prev.filter(c => c.id !== id))}
                     onDeleteAll={() => setConversations([])}
+                    user={user}
+                    onSignOut={signOut}
                 />
             </div>
             <div className="flex-1 flex flex-col h-full relative z-10">

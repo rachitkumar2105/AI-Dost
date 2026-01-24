@@ -1,9 +1,11 @@
-import { Plus, MessageSquare, Trash2 } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, LogOut, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import type { Conversation } from '@/hooks/useConversations';
+import { User } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 
 interface ChatSidebarProps {
   conversations: Conversation[];
@@ -12,6 +14,8 @@ interface ChatSidebarProps {
   onNewChat: () => void;
   onDeleteConversation: (id: string) => void;
   onDeleteAll: () => void;
+  user?: User | null;
+  onSignOut?: () => void;
 }
 
 export function ChatSidebar({
@@ -21,7 +25,10 @@ export function ChatSidebar({
   onNewChat,
   onDeleteConversation,
   onDeleteAll,
+  user,
+  onSignOut,
 }: ChatSidebarProps) {
+  const navigate = useNavigate();
   return (
     <div className="h-full flex flex-col bg-sidebar-background border-r border-sidebar-border">
       {/* Header */}
@@ -96,9 +103,41 @@ export function ChatSidebar({
             Clear History
           </Button>
         )}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          AI Dost is ready
+
+        {user ? (
+          <div className="pt-2 border-t border-sidebar-border/50">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                <UserIcon className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{user.user_metadata.full_name || 'User'}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start gap-2 text-xs"
+              onClick={onSignOut}
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Sign Out
+            </Button>
+          </div>
+        ) : (
+          <Button
+            className="w-full gap-2"
+            onClick={() => navigate('/auth')}
+          >
+            <UserIcon className="w-4 h-4" />
+            Sign In
+          </Button>
+        )}
+
+        <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground pt-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          AI Dost is active
         </div>
       </div>
     </div>
