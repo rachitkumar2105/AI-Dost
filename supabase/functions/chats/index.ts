@@ -1,11 +1,10 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -19,11 +18,6 @@ serve(async (req) => {
     }
 
     console.log("Received chat request with", messages.length, "messages");
-
-    // Transform messages to Gemini format
-    // OpenAI/Lovable format: { role: 'user'|'assistant'|'system', content: '...' }
-    // Gemini format: { role: 'user'|'model', parts: [{ text: '...' }] }
-    // System instruction is separate in Gemini
 
     let systemInstruction = `You are AI Dost, a helpful and friendly AI companion.
 IDENTITY OVERRIDE (CRITICAL):
@@ -46,12 +40,6 @@ Your core persona:
         parts: [{ text: msg.content }]
       }));
 
-
-    // Call Gemini API
-    // Using gemini-2.0-flash as it is the only confirmed working model for this key (even if rate limited)
-
-    // Prepend system instruction to the contents array as a user message
-    // This is the most robust way to handle system prompts across different Gemini API versions
     const finalContents = [
       {
         role: 'user',
@@ -61,7 +49,7 @@ Your core persona:
     ];
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
@@ -80,9 +68,7 @@ Your core persona:
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Gemini API error:", response.status, errorText);
-      // Return the error to the client with 200 status so the client can read the error message
-      // instead of throwing a generic "non-2xx status code" error.
-      return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText }), {
+      return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText, version: "v6-native" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -99,8 +85,8 @@ Your core persona:
 
   } catch (e) {
     console.error("Chat function error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500,
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error", version: "v6-native-check" }), {
+      status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
