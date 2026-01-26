@@ -257,13 +257,12 @@ const Index = () => {
                 </div>
 
 
-                {/* Chat Messages Area */}
                 <div
                     ref={scrollAreaRef}
                     className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scroll-smooth"
                 >
                     {messages.length === 0 ? (
-                        <WelcomeScreen onQuickAction={handleSend} />
+                        <WelcomeScreen onSend={handleSend} />
                     ) : (
                         <AnimatePresence initial={false}>
                             {messages.map((message) => (
@@ -377,7 +376,7 @@ const Index = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

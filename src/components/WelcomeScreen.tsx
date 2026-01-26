@@ -50,7 +50,6 @@ export function WelcomeScreen({ onSend }: WelcomeScreenProps) {
         <h1 className="text-2xl md:text-3xl font-bold mb-0.5 gradient-text">
           AI Dost
         </h1>
-        <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic mb-2">made by Rachit Kumar Singh.</p>
         <p className="text-muted-foreground text-sm md:text-base text-center max-w-md">
           Your friendly AI companion for coding, learning, and creative tasks
         </p>
