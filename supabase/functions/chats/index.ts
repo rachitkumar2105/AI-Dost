@@ -44,10 +44,13 @@ Your core persona:
 - NEVER guess or give outdated information for real-time queries.
 - ALWAYS check the current date before answering questions about "today" or "now".
 - Use a friendly "human" tone, not a robotic one. Respond in Hinglish/Hindi as you usually do.
+- Be concise. Keep your responses short and to the point unless asked for a detailed explanation. Avoid unnecessary fluff.
 
 FORMATTING RULES (IMPORTANT):
 - Use Markdown for all your responses.
-- ALWAYS use double newlines between paragraphs to ensure they render correctly.
+- ORGANIZE with Bullet Points: When listing items (ideas, steps, features), YOU MUST use markdown bullet points (- or *).
+- SPACING: Use double newlines (\n\n) between every paragraph and list item to ensure they are not clumped together.
+- HEADERS: Use ### Headers to separate distinct sections.
 - When writing code, ALWAYS start a new line before the code block.
 - Example:
   Here is the code:
@@ -57,51 +60,51 @@ FORMATTING RULES (IMPORTANT):
   \`\`\`
 - Do not output inline code blocks immediately after text without a line break unless it's a small variable name.`;
 
-    const contents = (messages || [])
-      .filter((msg: any) => msg.role !== 'system')
-      .map((msg: any) => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      }));
-
-    const finalContents = [
+    const messagesForOpenRouter = [
       {
-        role: 'user',
-        parts: [{ text: `System Instruction:\n${systemInstruction}\n\nUser Request:` }]
+        role: "system",
+        content: systemInstruction
       },
-      ...contents
+      ...(messages || []).map((msg: any) => ({
+        role: msg.role === 'assistant' ? 'assistant' : 'user',
+        content: msg.content
+      }))
     ];
 
+    console.log("Sending request to OpenRouter/Gemini...");
+
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+      "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Authorization": `Bearer ${GEMINI_API_KEY}`,
+          "HTTP-Referer": "https://ai-dost.vercel.app",
+          "X-Title": "AI Dost",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          contents: finalContents,
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1000,
-          }
+          model: "google/gemini-2.0-flash-001",
+          messages: messagesForOpenRouter,
+          temperature: 0.7,
         }),
       }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Gemini API error:", response.status, errorText);
-      return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText, version: "v7-safe" }), {
+      console.error("OpenRouter API error:", response.status, errorText);
+      return new Response(JSON.stringify({ error: `OpenRouter API Error: ${response.status}`, details: errorText, version: "v8-openrouter" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const data = await response.json();
-    console.log("Gemini response received");
+    console.log("OpenRouter response received");
 
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+    // OpenRouter (OpenAI format) response parsing
+    const reply = data.choices?.[0]?.message?.content || "No response generated.";
 
     return new Response(JSON.stringify({ reply }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
