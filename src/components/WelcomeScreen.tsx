@@ -74,7 +74,7 @@ export function WelcomeScreen({ onSend }: WelcomeScreenProps) {
             key={suggestion.title}
             onClick={() => onSend(suggestion.message)}
             style={{ animationDelay: `${index * 100}ms` }}
-            className="flex flex-col items-start p-3 rounded-2xl bg-secondary/10 border border-border/50 hover:bg-secondary/20 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_30px_rgba(var(--primary),0.1)] text-left group active:scale-95 animate-in fade-in slide-in-from-bottom-2 fill-mode-forwards opacity-0"
+            className="flex flex-col items-start p-3 rounded-2xl bg-secondary/10 border border-border/50 hover:bg-secondary/20 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_30px_rgba(var(--primary),0.1)] text-left group active:scale-95 animate-in fade-in slide-in-from-bottom-2"
           >
             <div className={cn("p-2 rounded-xl mb-2 transition-opacity", `bg-gradient-to-br ${suggestion.gradient} opacity-80 group-hover:opacity-100 shadow-md`)}>
               <suggestion.icon className="w-4 h-4 text-white" />
