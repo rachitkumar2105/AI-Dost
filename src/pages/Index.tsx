@@ -4,8 +4,6 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatInput } from "@/components/ChatInput";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-// import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-// import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Copy, Menu, Rocket, Stars } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
