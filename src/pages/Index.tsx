@@ -182,7 +182,7 @@ const Index = () => {
             </div>
 
             {/* Desktop Sidebar */}
-            <div className="hidden md:flex w-[280px] flex-shrink-0 z-20 glass border-r border-white/5">
+            <div className="hidden md:flex w-[280px] flex-shrink-0 z-20 bg-sidebar-background border-r border-white/5">
                 <ChatSidebar
                     conversations={conversations}
                     currentConversation={currentConversation}

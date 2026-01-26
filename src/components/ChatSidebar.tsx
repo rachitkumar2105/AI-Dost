@@ -30,7 +30,7 @@ export function ChatSidebar({
 }: ChatSidebarProps) {
   const navigate = useNavigate();
   return (
-    <div className="h-full flex flex-col bg-sidebar-background border-r border-sidebar-border">
+    <div className="h-full flex flex-col bg-sidebar-background">
       {/* Header */}
       <div className="p-4 border-b border-sidebar-border">
         <Button
