@@ -53,7 +53,7 @@ export function ChatHeader({ onMenuClick, onLogoClick, showMenuButton }: ChatHea
             <div className="flex flex-col">
               <h1 className="font-bold text-base md:text-lg gradient-text leading-none">AI Dost</h1>
               <div className="flex items-center gap-1.5">
-                <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic leading-none">made by Rachit Kumar Singh.</p>
+                <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium italic leading-none">- made by Rachit</p>
                 <Button
                   variant="ghost"
                   size="icon"

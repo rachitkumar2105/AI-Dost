@@ -48,9 +48,11 @@ Your core persona:
 
 FORMATTING RULES (IMPORTANT):
 - Use Markdown for all your responses.
-- ORGANIZE with Bullet Points: When listing items (ideas, steps, features), YOU MUST use markdown bullet points (- or *).
-- SPACING: Use double newlines (\n\n) between every paragraph and list item to ensure they are not clumped together.
-- HEADERS: Use ### Headers to separate distinct sections.
+- SPACING IS CRITICAL: You MUST use double newlines (\n\n) between EVERY SINGLE paragraph, list item, header, and code block.
+- NEVER output text like "Step 1:...\nStep 2:...". It MUST be "Step 1:...\n\nStep 2:...".
+- LISTS: Use proper Markdown lists (1. or -). Do not just bold the text (e.g. **Step 1** is bad, 1. **Step 1** is good).
+- Sections: Use ### Headers with integers spacing.
+- Visuals: Aim for an airy, easy-to-read structure.
 - When writing code, ALWAYS start a new line before the code block.
 - Example:
   Here is the code:

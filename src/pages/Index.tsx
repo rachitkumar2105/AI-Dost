@@ -1,11 +1,14 @@
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatInput } from "@/components/ChatInput";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { Copy } from "lucide-react";
+import { Copy, Menu, Rocket, Stars } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 // Helper to determine if code is multiline (simple heuristic)
 const parsedResponseIsMultiline = (text: string) => text.includes('\n');
@@ -16,11 +19,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { useConversations } from "@/hooks/useConversations";
 import { useNavigate } from "react-router-dom";
 
-const Index = () => {
+interface IndexProps {
+    initialIncognito?: boolean;
+}
+
+const Index = ({ initialIncognito = false }: IndexProps) => {
     // Hooks
     const { toast } = useToast();
     const { user, signOut } = useAuth();
     const navigate = useNavigate();
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     // Custom hook for managing conversations and reliable state
     const {
@@ -38,11 +46,19 @@ const Index = () => {
     } = useConversations();
 
     // Local state for UI
-    const [isTemporary, setIsTemporary] = useState(false);
+    const [isTemporary, setIsTemporary] = useState(initialIncognito);
     const [sending, setSending] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     // Determines if we are in "loading" state (either fetching history or sending a message)
     const isLoading = historyLoading || sending;
+
+    // Scroll to bottom on messages change
+    useEffect(() => {
+        if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+        }
+    }, [messages, sending]);
 
     // Fail-safe: Redirect if no user (should be handled by ProtectedRoute, but double check)
     useEffect(() => {
@@ -81,10 +97,7 @@ const Index = () => {
                 }
 
                 await addMessage('user', messageContent, activeConversationId);
-                // addMessage updates the 'messages' from the hook automatically via re-fetch or state update
-                // However, we need the *updated* list for the API call context. 
-                // Since state updates are async, we construct the context optimistically or wait.
-                // For simplicity, we'll append optimistically for the API call context.
+                // Optimistic update
                 currentMessages = [...messages, { role: 'user', content: messageContent } as any];
             }
 
@@ -124,10 +137,9 @@ const Index = () => {
     };
 
     const handleNewChat = async () => {
+        setMobileOpen(false);
         if (isTemporary) {
             setMessages([]);
-            // Remain in temp mode? Or switch back? Usually new chat implies reset.
-            // Let's keep the user's preference for mode, but clear messages.
         } else {
             // Start a fresh persisted chat
             await startNewChat();
@@ -135,129 +147,238 @@ const Index = () => {
     };
 
     return (
-        <div className="flex h-screen w-full bg-background overflow-hidden relative">
-            <div className="hidden md:flex w-[260px] flex-shrink-0">
+        <div className="flex h-screen w-full bg-background overflow-hidden relative stars-bg font-sans text-foreground">
+            {/* Mobile Sidebar Trigger & Header */}
+            <div className="md:hidden fixed top-0 left-0 right-0 z-50 glass flex items-center justify-between p-4 h-16">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                        <Rocket className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">AI Dost</span>
+                </div>
+
+                <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
+                            <Menu className="w-6 h-6" />
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="p-0 w-[280px] bg-card border-r border-border">
+                        <ChatSidebar
+                            conversations={conversations}
+                            currentConversation={currentConversation}
+                            onSelectConversation={(c) => {
+                                setIsTemporary(false);
+                                selectConversation(c);
+                                setMobileOpen(false);
+                            }}
+                            onNewChat={handleNewChat}
+                            onDeleteConversation={deleteConversation}
+                            onDeleteAll={deleteAllConversations}
+                            user={user}
+                            onSignOut={() => {
+                                signOut();
+                                navigate("/auth");
+                            }}
+                        />
+                    </SheetContent>
+                </Sheet>
+            </div>
+
+            {/* Desktop Sidebar */}
+            <div className="hidden md:flex w-[280px] flex-shrink-0 z-20 glass border-r border-white/5">
                 <ChatSidebar
                     conversations={conversations}
                     currentConversation={currentConversation}
                     onSelectConversation={(c) => {
-                        setIsTemporary(false); // Switch off temp mode when selecting history
+                        setIsTemporary(false);
                         selectConversation(c);
                     }}
                     onNewChat={handleNewChat}
                     onDeleteConversation={deleteConversation}
                     onDeleteAll={deleteAllConversations}
                     user={user}
-                    onSignOut={signOut}
+                    onSignOut={() => {
+                        signOut();
+                        navigate("/auth");
+                    }}
                 />
             </div>
-            <div className="flex-1 flex flex-col h-full relative z-10">
-                {/* Header for features like Temporary Toggle */}
-                <div className="flex items-center justify-end p-2 border-b bg-background/50 backdrop-blur">
+
+            {/* Main Chat Area */}
+            <div className="flex-1 flex flex-col h-full relative z-10 pt-16 md:pt-0">
+                {/* Header (Desktop) */}
+                <div className="hidden md:flex h-16 glass border-b border-white/5 items-center justify-between px-6 flex-shrink-0">
                     <div className="flex items-center gap-2">
-                        <span className={`text-xs font-medium ${isTemporary ? 'text-orange-500' : 'text-muted-foreground'}`}>
-                            {isTemporary ? 'Temporary Chat (Not Saved)' : 'History Enabled'}
-                        </span>
-                        <div
-                            className={`w-8 h-4 rounded-full p-0.5 cursor-pointer transition-colors ${isTemporary ? 'bg-orange-500' : 'bg-gray-600'}`}
-                            onClick={() => {
-                                setIsTemporary(!isTemporary);
-                                if (!isTemporary) {
-                                    // Switching TO temp mode: clear current view to start fresh temp chat
-                                    resetToHome();
-                                    setMessages([]);
-                                } else {
-                                    // Switching BACK to history: reset to home (empty) or last chat?
-                                    // Let's reset to home state so they can select a chat.
-                                    resetToHome();
-                                }
-                            }}
-                        >
-                            <div className={`w-3 h-3 bg-white rounded-full shadow-sm transition-transform ${isTemporary ? 'translate-x-4' : 'translate-x-0'}`} />
+                        {currentConversation ? (
+                            <span className="font-medium text-gray-200 truncate max-w-[300px]">{currentConversation.title}</span>
+                        ) : (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <Stars className="w-4 h-4 text-yellow-500 animate-pulse" />
+                                <span>New Conversation</span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 bg-black/40 rounded-full px-3 py-1.5 border border-white/5">
+                            <span className={`text-xs font-medium ${isTemporary ? 'text-orange-400' : 'text-gray-400'}`}>
+                                {isTemporary ? 'Temporary Chat (Not Saved)' : 'History On'}
+                            </span>
+                            <div
+                                className={`w-8 h-4 rounded-full p-0.5 cursor-pointer transition-colors duration-300 ${isTemporary ? 'bg-orange-500/20 ring-1 ring-orange-500/50' : 'bg-white/10'}`}
+                                onClick={() => {
+                                    setIsTemporary(!isTemporary);
+                                    if (!isTemporary) {
+                                        resetToHome();
+                                        toast({ description: "Temporary mode enabled. Chats won't be saved." });
+                                    } else {
+                                        toast({ description: "History mode enabled. Chats will be saved." });
+                                    }
+                                }}
+                            >
+                                <motion.div
+                                    className={`w-3 h-3 rounded-full shadow-sm ${isTemporary ? 'bg-orange-500' : 'bg-gray-400'}`}
+                                    animate={{ x: isTemporary ? 16 : 0 }}
+                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
-                    {messages.length === 0 ? (
-                        <WelcomeScreen onSend={handleSend} />
-                    ) : (
-                        <div className="p-4 space-y-4">
-                            {messages.map((msg, i) => (
-                                <div key={msg.id || i} className={`p-4 rounded-lg ${msg.role === 'user' ? 'bg-primary/10 ml-auto' : 'bg-secondary/10 mr-auto'} max-w-[80%]`}>
-                                    <ReactMarkdown
-                                        className="prose dark:prose-invert max-w-none break-words"
-                                        components={{
-                                            pre: ({ node, ...props }) => (
-                                                <div className="not-prose my-4 rounded-lg overflow-hidden border border-border/50 bg-[#1e1e1e]">
-                                                    {props.children}
-                                                </div>
-                                            ),
-                                            code: ({ node, className, children, ...props }) => {
-                                                const match = /language-(\w+)/.exec(className || '');
-                                                const isInline = !match && !parsedResponseIsMultiline(String(children));
+                {/* Mobile Header status bar (below fixed header) */}
+                <div className="md:hidden flex items-center justify-between px-4 py-2 bg-black/20 backdrop-blur-sm border-b border-white/5 text-xs">
+                    <span className="truncate max-w-[200px] text-gray-300">
+                        {currentConversation?.title || "New Chat"}
+                    </span>
+                    <div className="flex items-center gap-2" onClick={() => setIsTemporary(!isTemporary)}>
+                        <div className={`w-2 h-2 rounded-full ${isTemporary ? 'bg-orange-500 animate-pulse' : 'bg-green-500'}`} />
+                        <span className={isTemporary ? 'text-orange-400' : 'text-gray-400'}>
+                            {isTemporary ? 'Temp' : 'Saved'}
+                        </span>
+                    </div>
+                </div>
 
-                                                if (isInline) {
+
+                {/* Chat Messages Area */}
+                <div
+                    ref={scrollAreaRef}
+                    className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scroll-smooth"
+                >
+                    {messages.length === 0 ? (
+                        <WelcomeScreen onQuickAction={handleSend} />
+                    ) : (
+                        <AnimatePresence initial={false}>
+                            {messages.map((message) => (
+                                <motion.div
+                                    key={message.id || Math.random().toString()}
+                                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                    className={`flex w-full ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div
+                                        className={`max-w-[85%] md:max-w-[75%] p-4 text-sm md:text-base leading-relaxed relative group
+                                            ${message.role === 'user'
+                                                ? 'chat-bubble-user'
+                                                : 'chat-bubble-ai'
+                                            }
+                                        `}
+                                    >
+                                        <ReactMarkdown
+                                            className="prose dark:prose-invert max-w-none break-words"
+                                            components={{
+                                                pre: ({ node, ...props }) => (
+                                                    <div className="not-prose my-4 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117] shadow-xl">
+                                                        {props.children}
+                                                    </div>
+                                                ),
+                                                code: ({ node, className, children, ...props }) => {
+                                                    const match = /language-(\w+)/.exec(className || '');
+                                                    const isInline = !match && !parsedResponseIsMultiline(String(children));
+
+                                                    if (isInline) {
+                                                        return (
+                                                            <code className="bg-white/10 text-white px-1.5 py-0.5 rounded text-sm font-mono border border-white/5" {...props}>
+                                                                {children}
+                                                            </code>
+                                                        );
+                                                    }
+
+                                                    const language = match ? match[1] : 'text';
+                                                    const codeString = String(children).replace(/\n$/, '');
+
                                                     return (
-                                                        <code className="bg-muted text-foreground px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
-                                                            {children}
-                                                        </code>
+                                                        <div className="relative group/code">
+                                                            <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-white/10">
+                                                                <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                                                    {language}
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        navigator.clipboard.writeText(codeString);
+                                                                        toast({ description: "Copied to clipboard" });
+                                                                    }}
+                                                                    className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors opacity-70 hover:opacity-100"
+                                                                >
+                                                                    <Copy className="h-3.5 w-3.5" />
+                                                                    Copy
+                                                                </button>
+                                                            </div>
+                                                            <SyntaxHighlighter
+                                                                // @ts-ignore
+                                                                style={atomOneDark}
+                                                                language={language}
+                                                                PreTag="div"
+                                                                customStyle={{
+                                                                    margin: 0,
+                                                                    padding: '1.5rem',
+                                                                    background: 'transparent',
+                                                                    fontSize: '0.9rem',
+                                                                    lineHeight: '1.6'
+                                                                }}
+                                                                wrapLines={true}
+                                                                wrapLongLines={true}
+                                                                {...props}
+                                                            >
+                                                                {codeString}
+                                                            </SyntaxHighlighter>
+                                                        </div>
                                                     );
                                                 }
-
-                                                const language = match ? match[1] : 'text';
-                                                const codeString = String(children).replace(/\n$/, '');
-
-                                                return (
-                                                    <div className="relative group">
-                                                        <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-white/5">
-                                                            <div className="text-xs font-medium text-gray-400 uppercase">
-                                                                {language}
-                                                            </div>
-                                                            <button
-                                                                onClick={() => {
-                                                                    navigator.clipboard.writeText(codeString);
-                                                                    toast({ description: "Copied to clipboard" });
-                                                                }}
-                                                                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
-                                                            >
-                                                                <Copy className="h-3.5 w-3.5" />
-                                                                Copy code
-                                                            </button>
-                                                        </div>
-                                                        <SyntaxHighlighter
-                                                            // @ts-ignore
-                                                            style={atomOneDark}
-                                                            language={language}
-                                                            PreTag="div"
-                                                            customStyle={{
-                                                                margin: 0,
-                                                                padding: '1.5rem',
-                                                                background: 'transparent',
-                                                                fontSize: '0.9rem',
-                                                                lineHeight: '1.5'
-                                                            }}
-                                                            wrapLines={true}
-                                                            wrapLongLines={true}
-                                                            {...props}
-                                                        >
-                                                            {codeString}
-                                                        </SyntaxHighlighter>
-                                                    </div>
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        {msg.content}
-                                    </ReactMarkdown>
-                                </div>
+                                            }}
+                                        >
+                                            {message.content}
+                                        </ReactMarkdown>
+                                    </div>
+                                </motion.div>
                             ))}
-                            {sending && <div className="p-4 text-muted-foreground animate-pulse">Thinking...</div>}
-                        </div>
+                        </AnimatePresence>
+                    )}
+                    {isLoading && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex w-full justify-start pl-2"
+                        >
+                            <div className="flex gap-1.5 p-3 rounded-2xl bg-white/5 border border-white/10">
+                                <div className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:-0.3s]" />
+                                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce [animation-delay:-0.15s]" />
+                                <div className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" />
+                            </div>
+                        </motion.div>
                     )}
                 </div>
-                <div className="p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <ChatInput onSend={handleSend} disabled={sending} isLoading={sending} />
+
+                {/* Input Area */}
+                <div className="p-4 md:p-6 glass border-t border-white/5">
+                    <div className="max-w-4xl mx-auto">
+                        <ChatInput onSend={handleSend} disabled={isLoading} />
+                        <div className="mt-2 text-center text-[10px] text-gray-500 flex items-center justify-center gap-2">
+                            <span>AI can make mistakes. Verify important info.</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

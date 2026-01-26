@@ -40,6 +40,14 @@ export function ChatSidebar({
           <Plus className="w-5 h-5" />
           New Chat
         </Button>
+        <Button
+          onClick={() => navigate('/incognito')}
+          variant="outline"
+          className="w-full gap-2 mt-2 border-dashed border-orange-500/50 hover:border-orange-500 text-orange-500 hover:text-orange-400 hover:bg-orange-500/10 rounded-xl h-10 text-sm"
+        >
+          <LogOut className="w-4 h-4" />
+          Incognito Chat
+        </Button>
       </div>
 
       {/* Conversations List */}
