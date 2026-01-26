@@ -86,9 +86,6 @@ export function WelcomeScreen({ onSend }: WelcomeScreenProps) {
       </div>
 
       {/* Hint */}
-      <p className="mt-6 text-xs text-muted-foreground/60 text-center">
-        Type a message below or use voice input to get started
-      </p>
     </div>
   );
 }

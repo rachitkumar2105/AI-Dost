@@ -211,8 +211,11 @@ const Index = () => {
                         {currentConversation ? (
                             <span className="font-medium text-gray-200 truncate max-w-[300px]">{currentConversation.title}</span>
                         ) : (
-                            <div className="flex flex-col">
-                                <span className="font-bold text-lg text-gray-200 leading-none">AI Dost</span>
+                            <div
+                                className="flex flex-col cursor-pointer hover:opacity-80 transition-opacity"
+                                onClick={() => resetToHome()}
+                            >
+                                <span className="font-bold text-lg leading-none bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">AI Dost</span>
                                 <span className="text-[10px] text-muted-foreground italic leading-none">- made by Rachit</span>
                             </div>
                         )}
