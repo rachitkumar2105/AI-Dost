@@ -144,7 +144,7 @@ const Index = () => {
     };
 
     return (
-        <div className="flex h-screen w-full bg-background overflow-hidden relative font-sans text-foreground">
+        <div className="flex h-[100dvh] w-full bg-background overflow-hidden relative font-sans text-foreground">
             <SpaceBackground />
             {/* Mobile Sidebar Trigger & Header */}
             <div className="md:hidden fixed top-0 left-0 right-0 z-50 glass flex items-center justify-between p-4 h-16">
@@ -372,7 +372,7 @@ const Index = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 md:p-6 glass border-t border-white/5">
+                <div className="p-3 md:p-6 glass border-t border-white/5">
                     <div className="max-w-4xl mx-auto">
                         <ChatInput onSend={handleSend} disabled={isLoading} />
                         <div className="mt-2 text-center text-[10px] text-gray-500 flex items-center justify-center gap-2">
