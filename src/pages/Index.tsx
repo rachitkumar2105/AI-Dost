@@ -4,8 +4,8 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatInput } from "@/components/ChatInput";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+// import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+// import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Copy, Menu, Rocket, Stars } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -286,71 +286,59 @@ const Index = () => {
                                             }
                                         `}
                                     >
-                                        <ReactMarkdown
-                                            className="prose dark:prose-invert max-w-none break-words"
-                                            components={{
-                                                pre: ({ node, ...props }) => (
-                                                    <div className="not-prose my-4 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117] shadow-xl">
-                                                        {props.children}
-                                                    </div>
-                                                ),
-                                                code: ({ node, className, children, ...props }) => {
-                                                    const match = /language-(\w+)/.exec(className || '');
-                                                    const isInline = !match && !parsedResponseIsMultiline(String(children));
+                                        <div className="prose dark:prose-invert max-w-none break-words">
+                                            <ReactMarkdown
+                                                components={{
+                                                    pre: ({ node, ...props }) => (
+                                                        <div className="not-prose my-4 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117] shadow-xl">
+                                                            {props.children}
+                                                        </div>
+                                                    ),
+                                                    code: ({ node, className, children, ...props }) => {
+                                                        const match = /language-(\w+)/.exec(className || '');
+                                                        const isInline = !match && !parsedResponseIsMultiline(String(children));
 
-                                                    if (isInline) {
+                                                        if (isInline) {
+                                                            return (
+                                                                <code className="bg-white/10 text-white px-1.5 py-0.5 rounded text-sm font-mono border border-white/5" {...props}>
+                                                                    {children}
+                                                                </code>
+                                                            );
+                                                        }
+
+                                                        const language = match ? match[1] : 'text';
+                                                        const codeString = String(children).replace(/\n$/, '');
+
                                                         return (
-                                                            <code className="bg-white/10 text-white px-1.5 py-0.5 rounded text-sm font-mono border border-white/5" {...props}>
-                                                                {children}
-                                                            </code>
+                                                            <div className="relative group/code">
+                                                                <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-white/10">
+                                                                    <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                                                        {language}
+                                                                    </div>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            navigator.clipboard.writeText(codeString);
+                                                                            toast({ description: "Copied to clipboard" });
+                                                                        }}
+                                                                        className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors opacity-70 hover:opacity-100"
+                                                                    >
+                                                                        <Copy className="h-3.5 w-3.5" />
+                                                                        Copy
+                                                                    </button>
+                                                                </div>
+                                                                <pre className="p-4 overflow-x-auto">
+                                                                    <code className={className} {...props}>
+                                                                        {codeString}
+                                                                    </code>
+                                                                </pre>
+                                                            </div>
                                                         );
                                                     }
-
-                                                    const language = match ? match[1] : 'text';
-                                                    const codeString = String(children).replace(/\n$/, '');
-
-                                                    return (
-                                                        <div className="relative group/code">
-                                                            <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-white/10">
-                                                                <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                                                    {language}
-                                                                </div>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        navigator.clipboard.writeText(codeString);
-                                                                        toast({ description: "Copied to clipboard" });
-                                                                    }}
-                                                                    className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors opacity-70 hover:opacity-100"
-                                                                >
-                                                                    <Copy className="h-3.5 w-3.5" />
-                                                                    Copy
-                                                                </button>
-                                                            </div>
-                                                            <SyntaxHighlighter
-                                                                // @ts-ignore
-                                                                style={atomOneDark}
-                                                                language={language}
-                                                                PreTag="div"
-                                                                customStyle={{
-                                                                    margin: 0,
-                                                                    padding: '1.5rem',
-                                                                    background: 'transparent',
-                                                                    fontSize: '0.9rem',
-                                                                    lineHeight: '1.6'
-                                                                }}
-                                                                wrapLines={true}
-                                                                wrapLongLines={true}
-                                                                {...props}
-                                                            >
-                                                                {codeString}
-                                                            </SyntaxHighlighter>
-                                                        </div>
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            {message.content}
-                                        </ReactMarkdown>
+                                                }}
+                                            >
+                                                {message.content}
+                                            </ReactMarkdown>
+                                        </div>
                                     </div>
                                 </motion.div>
                             ))}
