@@ -3,73 +3,113 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 6%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 4%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 263 90% 65%; /* Purple/Neon */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 199 89% 48%; /* Cyan/Neon */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 263 90% 65%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 263 90% 65%;
-    --radius: 0.75rem;
-    
-    --sidebar-background: 240 10% 3%;
-    --sidebar-foreground: 240 5% 90%;
-    --sidebar-primary: 263 90% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 16%;
-    --sidebar-accent-foreground: 240 5% 90%;
-    --sidebar-border: 240 4% 16%;
-    --sidebar-ring: 263 90% 65%;
-  }
+    :root {
+        --background: 240 10% 3.9%;
+        --foreground: 0 0% 98%;
+        --card: 240 10% 3.9%;
+        --card-foreground: 0 0% 98%;
+        --popover: 240 10% 3.9%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 263 70% 50%;
+        /* Deep Purple */
+        --primary-foreground: 0 0% 100%;
+        --secondary: 240 4% 16%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 240 4% 16%;
+        --muted-foreground: 240 5% 65%;
+        --accent: 263 70% 50%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 4% 16%;
+        --input: 240 4% 16%;
+        --ring: 263 70% 50%;
+        --radius: 0.75rem;
+
+        --sidebar-background: 240 10% 2%;
+        --sidebar-foreground: 240 5% 90%;
+        --sidebar-primary: 263 70% 50%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 4% 16%;
+        --sidebar-accent-foreground: 240 5% 90%;
+        --sidebar-border: 240 4% 10%;
+        --sidebar-ring: 263 70% 50%;
+    }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
 }
 
 @layer utilities {
     .glass {
-        @apply bg-black/30 backdrop-blur-md border border-white/10 shadow-xl;
+        @apply bg-[#0a0a0a]/80 backdrop-blur-xl border border-white/5 shadow-2xl;
     }
+
+    .glass-subtle {
+        @apply bg-[#0a0a0a]/60 backdrop-blur-lg border border-white/5;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+    }
+
     .text-glow {
-        text-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
+        text-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
     }
+
     .chat-bubble-user {
-        @apply bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/20;
+        @apply bg-gradient-to-br from-violet-600 via-primary to-indigo-600 text-white shadow-lg shadow-indigo-500/10 border border-white/10;
     }
+
     .chat-bubble-ai {
-        @apply bg-white/5 border border-white/10 text-gray-100 shadow-lg backdrop-blur-sm;
+        @apply bg-[#1a1a1a] border border-white/5 text-gray-200 shadow-sm;
     }
 }
 
 /* Space Animations */
 @keyframes twinkle {
-    0%, 100% { opacity: 0.2; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); }
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .animate-float {
@@ -78,16 +118,21 @@
 
 .stars-bg {
     background-color: #050505;
-    background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-        radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+    background-image:
+        radial-gradient(white, rgba(255, 255, 255, .2) 2px, transparent 3px),
+        radial-gradient(white, rgba(255, 255, 255, .15) 1px, transparent 2px),
+        radial-gradient(white, rgba(255, 255, 255, .1) 2px, transparent 3px);
     background-size: 550px 550px, 350px 350px, 250px 250px;
     background-position: 0 0, 40px 60px, 130px 270px;
     animation: stars-move 120s linear infinite;
 }
 
 @keyframes stars-move {
-    from { background-position: 0 0, 40px 60px, 130px 270px; }
-    to { background-position: 550px 550px, 390px 410px, 380px 520px; }
+    from {
+        background-position: 0 0, 40px 60px, 130px 270px;
+    }
+
+    to {
+        background-position: 550px 550px, 390px 410px, 380px 520px;
+    }
 }
