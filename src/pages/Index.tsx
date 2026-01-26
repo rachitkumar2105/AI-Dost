@@ -284,7 +284,7 @@ const Index = () => {
                                             }
                                         `}
                                     >
-                                        <div className="prose dark:prose-invert max-w-none break-words">
+                                        <div className="prose prose-invert max-w-none break-words text-gray-100">
                                             <ReactMarkdown
                                                 components={{
                                                     pre: ({ node, ...props }) => (
