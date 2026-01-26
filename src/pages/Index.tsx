@@ -1,4 +1,5 @@
 import { WelcomeScreen } from "@/components/WelcomeScreen";
+import { SpaceBackground } from "@/components/SpaceBackground";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatInput } from "@/components/ChatInput";
 import { useState, useEffect, useRef } from "react";
@@ -143,7 +144,8 @@ const Index = () => {
     };
 
     return (
-        <div className="flex h-screen w-full bg-background overflow-hidden relative stars-bg font-sans text-foreground">
+        <div className="flex h-screen w-full bg-background overflow-hidden relative font-sans text-foreground">
+            <SpaceBackground />
             {/* Mobile Sidebar Trigger & Header */}
             <div className="md:hidden fixed top-0 left-0 right-0 z-50 glass flex items-center justify-between p-4 h-16">
                 <div className="flex items-center gap-2">
