@@ -5,19 +5,31 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const { messages } = await req.json();
+    let messages;
+    try {
+      const body = await req.json();
+      messages = body.messages;
+    } catch (e) {
+      throw new Error("Invalid JSON body received");
+    }
+
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
 
     if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY is not configured");
+      // Return 200 with error details instead of 500
+      return new Response(JSON.stringify({ error: "GEMINI_API_KEY is not configured on server", version: "v7-safe" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    console.log("Received chat request with", messages.length, "messages");
+    console.log("Received chat request with", messages?.length, "messages");
 
     let systemInstruction = `You are AI Dost, a helpful and friendly AI companion.
 IDENTITY OVERRIDE (CRITICAL):
@@ -31,9 +43,21 @@ Your core persona:
 - You are knowledgeable and helpful across coding, writing, and general tasks.
 - NEVER guess or give outdated information for real-time queries.
 - ALWAYS check the current date before answering questions about "today" or "now".
-- Use a friendly "human" tone, not a robotic one. Respond in Hinglish/Hindi as you usually do.`;
+- Use a friendly "human" tone, not a robotic one. Respond in Hinglish/Hindi as you usually do.
 
-    const contents = messages
+FORMATTING RULES (IMPORTANT):
+- Use Markdown for all your responses.
+- ALWAYS use double newlines between paragraphs to ensure they render correctly.
+- When writing code, ALWAYS start a new line before the code block.
+- Example:
+  Here is the code:
+
+  \`\`\`python
+  print("Hello")
+  \`\`\`
+- Do not output inline code blocks immediately after text without a line break unless it's a small variable name.`;
+
+    const contents = (messages || [])
       .filter((msg: any) => msg.role !== 'system')
       .map((msg: any) => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
@@ -68,7 +92,7 @@ Your core persona:
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Gemini API error:", response.status, errorText);
-      return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText, version: "v6-native" }), {
+      return new Response(JSON.stringify({ error: `Gemini API Error: ${response.status}`, details: errorText, version: "v7-safe" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -85,7 +109,8 @@ Your core persona:
 
   } catch (e) {
     console.error("Chat function error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error", version: "v6-native-check" }), {
+    // CRITICAL: Always return 200 OK so client sees the error message
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error", version: "v7-safe-catch" }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

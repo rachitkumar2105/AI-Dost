@@ -2,6 +2,13 @@ import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatInput } from "@/components/ChatInput";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Copy } from "lucide-react";
+
+// Helper to determine if code is multiline (simple heuristic)
+const parsedResponseIsMultiline = (text: string) => text.includes('\n');
 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -109,7 +116,71 @@ const Index = () => {
                         <div className="p-4 space-y-4">
                             {messages.map((msg, i) => (
                                 <div key={i} className={`p-4 rounded-lg ${msg.role === 'user' ? 'bg-primary/10 ml-auto' : 'bg-secondary/10 mr-auto'} max-w-[80%]`}>
-                                    {msg.content}
+                                    <ReactMarkdown
+                                        className="prose dark:prose-invert max-w-none break-words"
+                                        components={{
+                                            pre: ({ node, ...props }) => (
+                                                <div className="not-prose my-4 rounded-lg overflow-hidden border border-border/50 bg-[#1e1e1e]">
+                                                    {props.children}
+                                                </div>
+                                            ),
+                                            code: ({ node, className, children, ...props }) => {
+                                                const match = /language-(\w+)/.exec(className || '');
+                                                const isInline = !match && !parsedResponseIsMultiline(String(children));
+
+                                                if (isInline) {
+                                                    return (
+                                                        <code className="bg-muted text-foreground px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
+                                                            {children}
+                                                        </code>
+                                                    );
+                                                }
+
+                                                const language = match ? match[1] : 'text';
+                                                const codeString = String(children).replace(/\n$/, '');
+
+                                                return (
+                                                    <div className="relative group">
+                                                        <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-white/5">
+                                                            <div className="text-xs font-medium text-gray-400 uppercase">
+                                                                {language}
+                                                            </div>
+                                                            <button
+                                                                onClick={() => {
+                                                                    navigator.clipboard.writeText(codeString);
+                                                                    toast({ description: "Copied to clipboard" });
+                                                                }}
+                                                                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
+                                                            >
+                                                                <Copy className="h-3.5 w-3.5" />
+                                                                Copy code
+                                                            </button>
+                                                        </div>
+                                                        <SyntaxHighlighter
+                                                            // @ts-ignore
+                                                            style={atomOneDark}
+                                                            language={language}
+                                                            PreTag="div"
+                                                            customStyle={{
+                                                                margin: 0,
+                                                                padding: '1.5rem',
+                                                                background: 'transparent',
+                                                                fontSize: '0.9rem',
+                                                                lineHeight: '1.5'
+                                                            }}
+                                                            wrapLines={true}
+                                                            wrapLongLines={true}
+                                                            {...props}
+                                                        >
+                                                            {codeString}
+                                                        </SyntaxHighlighter>
+                                                    </div>
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        {msg.content}
+                                    </ReactMarkdown>
                                 </div>
                             ))}
                             {loading && <div className="p-4">Thinking...</div>}
