@@ -28,14 +28,6 @@ const App = () => (
               }
             />
             <Route path="/auth" element={<Auth />} />
-            <Route
-              path="/incognito"
-              element={
-                <ProtectedRoute>
-                  <Index initialIncognito={true} />
-                </ProtectedRoute>
-              }
-            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

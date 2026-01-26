@@ -19,11 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useConversations } from "@/hooks/useConversations";
 import { useNavigate } from "react-router-dom";
 
-interface IndexProps {
-    initialIncognito?: boolean;
-}
-
-const Index = ({ initialIncognito = false }: IndexProps) => {
+const Index = () => {
     // Hooks
     const { toast } = useToast();
     const { user, signOut } = useAuth();
@@ -46,7 +42,7 @@ const Index = ({ initialIncognito = false }: IndexProps) => {
     } = useConversations();
 
     // Local state for UI
-    const [isTemporary, setIsTemporary] = useState(initialIncognito);
+    const [isTemporary, setIsTemporary] = useState(false);
     const [sending, setSending] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -213,9 +209,9 @@ const Index = ({ initialIncognito = false }: IndexProps) => {
                         {currentConversation ? (
                             <span className="font-medium text-gray-200 truncate max-w-[300px]">{currentConversation.title}</span>
                         ) : (
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <Stars className="w-4 h-4 text-yellow-500 animate-pulse" />
-                                <span>New Conversation</span>
+                            <div className="flex flex-col">
+                                <span className="font-bold text-lg text-gray-200 leading-none">AI Dost</span>
+                                <span className="text-[10px] text-muted-foreground italic leading-none">- made by Rachit</span>
                             </div>
                         )}
                     </div>
