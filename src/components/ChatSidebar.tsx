@@ -66,7 +66,7 @@ export function ChatSidebar({
               >
                 <MessageSquare className="w-4 h-4 flex-shrink-0 opacity-60" />
                 <div className="flex-1 min-w-0">
-                  <p className="truncate text-sm font-medium">
+                  <p className="text-sm font-medium line-clamp-2 leading-snug break-words">
                     {conversation.title || 'New conversation'}
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
