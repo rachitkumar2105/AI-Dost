@@ -50,7 +50,7 @@
 
 @layer utilities {
     .glass {
-        @apply bg-[#050510]/70 backdrop-blur-md border border-blue-500/10 shadow-[0_4px_30px_rgba(0, 0, 0, 0.1)];
+        @apply bg-[#050510]/70 backdrop-blur-md border border-blue-500/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)];
     }
 
     .glass-subtle {
