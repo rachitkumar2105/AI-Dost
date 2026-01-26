@@ -35,7 +35,7 @@ const suggestions = [
 
 export function WelcomeScreen({ onSend }: WelcomeScreenProps) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center min-h-[50vh] px-4 py-8 md:py-12">
+    <div className="w-full h-full flex flex-col items-center justify-center min-h-[50vh] px-4 py-8 md:py-12 overflow-y-auto">
       {/* Logo and Title */}
       <div className="flex flex-col items-center mb-4 md:mb-6 animate-float">
         <div className="relative mb-2 md:mb-3">

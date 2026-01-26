@@ -277,7 +277,7 @@ const Index = () => {
                                     className={`flex w-full ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div
-                                        className={`max-w-[85%] md:max-w-[75%] p-4 text-sm md:text-base leading-relaxed relative group
+                                        className={`max-w-[90%] md:max-w-[75%] p-3 md:p-4 text-sm md:text-base leading-relaxed relative group
                                             ${message.role === 'user'
                                                 ? 'chat-bubble-user'
                                                 : 'chat-bubble-ai'
@@ -288,7 +288,7 @@ const Index = () => {
                                             <ReactMarkdown
                                                 components={{
                                                     pre: ({ node, ...props }) => (
-                                                        <div className="not-prose my-4 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117] shadow-xl">
+                                                        <div className="not-prose my-3 md:my-4 rounded-lg overflow-hidden border border-white/10 bg-[#0d1117] shadow-xl">
                                                             {props.children}
                                                         </div>
                                                     ),
@@ -298,7 +298,7 @@ const Index = () => {
 
                                                         if (isInline) {
                                                             return (
-                                                                <code className="bg-white/10 text-white px-1.5 py-0.5 rounded text-sm font-mono border border-white/5" {...props}>
+                                                                <code className="bg-white/10 text-white px-1.5 py-0.5 rounded text-sm font-mono border border-white/5 break-all whitespace-pre-wrap" {...props}>
                                                                     {children}
                                                                 </code>
                                                             );
@@ -309,8 +309,8 @@ const Index = () => {
 
                                                         return (
                                                             <div className="relative group/code">
-                                                                <div className="flex items-center justify-between px-4 py-2 bg-[#161b22] border-b border-white/10">
-                                                                    <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                                                <div className="flex items-center justify-between px-3 py-1.5 md:px-4 md:py-2 bg-[#161b22] border-b border-white/10">
+                                                                    <div className="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wider">
                                                                         {language}
                                                                     </div>
                                                                     <button
@@ -318,14 +318,14 @@ const Index = () => {
                                                                             navigator.clipboard.writeText(codeString);
                                                                             toast({ description: "Copied to clipboard" });
                                                                         }}
-                                                                        className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors opacity-70 hover:opacity-100"
+                                                                        className="flex items-center gap-1.5 text-[10px] md:text-xs text-gray-400 hover:text-white transition-colors opacity-70 hover:opacity-100"
                                                                     >
-                                                                        <Copy className="h-3.5 w-3.5" />
+                                                                        <Copy className="h-3 w-3 md:h-3.5 md:w-3.5" />
                                                                         Copy
                                                                     </button>
                                                                 </div>
-                                                                <pre className="p-4 overflow-x-auto">
-                                                                    <code className={className} {...props}>
+                                                                <pre className="p-3 md:p-4 overflow-x-auto custom-scrollbar">
+                                                                    <code className={`${className} text-xs md:text-sm`} {...props}>
                                                                         {codeString}
                                                                     </code>
                                                                 </pre>
